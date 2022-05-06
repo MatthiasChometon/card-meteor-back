@@ -33,5 +33,8 @@ export class UsersService {
     return this.users.find((user) => user[field] === value);
   }
 
+  updateOne(userId: number, field: string, value: string) {
+    const index = this.users.findIndex((user) => user.id === userId);
+    this.users[index] = { ...this.users[index], [field]: value };
   }
 }
