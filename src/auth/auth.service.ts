@@ -24,7 +24,7 @@ export class AuthService {
 
   async login(user: User) {
     const { access_token, refresh_token } = await this.signTokens(user);
-    const access_token = this.jwtService.sign(payload);
+    await this.usersService.updateOne(user.id, 'refresh_token', refresh_token);
 
     return {
       refresh_token,
@@ -49,6 +49,12 @@ export class AuthService {
     });
   }
 
+  async refreshTokens(refresh_token: string) {
+    const user = await this.resolveRefreshToken(refresh_token);
+    const tokens = await this.signTokens(user);
+    return tokens;
+  }
+
   async signTokens(user: User) {
     const access_token = await this.signToken(user);
     const refresh_token = await this.signRefreshToken(user, 60 * 60 * 24 * 30);
@@ -69,4 +75,17 @@ export class AuthService {
     return token;
   }
 
+  async resolveRefreshToken(refresh_token: string): Promise<User> {
+    const [payload, user] = await Promise.all([
+      this.jwtService.verify(refresh_token, {
+        secret: 'test',
+      }),
+      this.usersService.findOne('refresh_token', refresh_token),
+    ]);
+
+    if (!payload) throw new Error('Refresh token not valid');
+    if (!user) throw new Error('Refresh token not found');
+
+    return user;
+  }
 }
