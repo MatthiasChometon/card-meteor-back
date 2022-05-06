@@ -13,7 +13,7 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string): Promise<User | null> {
-    const user = await this.usersService.findOne(username);
+    const user = await this.usersService.findOne('username', username);
     if (!user) return null;
 
     const isPasswordValid = await bcrypt.compare(password, user?.password);
@@ -33,7 +33,10 @@ export class AuthService {
   }
 
   async signup(loginUserInput: LoginUserInput) {
-    const user = await this.usersService.findOne(loginUserInput.username);
+    const user = await this.usersService.findOne(
+      'username',
+      loginUserInput.username,
+    );
 
     if (user) throw new Error('User already exist');
 

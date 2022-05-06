@@ -29,7 +29,9 @@ export class UsersService {
     return this.users;
   }
 
-  findOne(username: string) {
-    return this.users.find((user) => user.username === username);
+  findOne(field: string, value: string) {
+    return this.users.find((user) => user[field] === value);
+  }
+
   }
 }
