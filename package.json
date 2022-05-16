@@ -30,7 +30,7 @@
     "@nestjs/passport": "^8.2.1",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/platform-fastify": "^8.4.4",
-    "apollo-server-fastify": "^3.6.7",
+    "apollo-server-fastify": "^3.7.0",
     "bcrypt": "^5.0.1",
     "class-validator": "^0.13.2",
     "graphql": "^16.4.0",
