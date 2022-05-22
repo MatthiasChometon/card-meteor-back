@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
@@ -14,10 +14,10 @@ export class AuthService {
 
   async validateUser(username: string, password: string): Promise<User | null> {
     const user = await this.usersService.findOne('username', username);
-    if (!user) return null;
+    if (!user) throw new UnauthorizedException();
 
     const isPasswordValid = await bcrypt.compare(password, user?.password);
-    if (!isPasswordValid) return null;
+    if (!isPasswordValid) throw new UnauthorizedException();
 
     return user;
   }
@@ -39,7 +39,7 @@ export class AuthService {
       loginUserInput.username,
     );
 
-    if (user) throw new Error('User already exist');
+    if (user) throw new UnauthorizedException('User already exist');
 
     const password = await bcrypt.hash(loginUserInput.password, 10);
 
@@ -75,17 +75,23 @@ export class AuthService {
     return token;
   }
 
+  private async verifyRefreshToken(refresh_token: string) {
+    try {
+      await this.jwtService.verifyAsync(refresh_token, {
+        secret: process.env.REFRESH_TOKEN_SECRET,
+      });
+    } catch (err) {
+      throw new UnauthorizedException('Refresh token not valid');
+    }
+  }
+
   private async resolveRefreshToken(refresh_token: string): Promise<User> {
-    const [payload, user] = await Promise.all([
-      this.jwtService.verify(refresh_token, {
-        secret: 'test',
-      }),
+    const [user] = await Promise.all([
       this.usersService.findOne('refresh_token', refresh_token),
+      this.verifyRefreshToken(refresh_token),
     ]);
 
-    if (!payload) throw new Error('Refresh token not valid');
-    if (!user) throw new Error('Refresh token not found');
-
+    if (!user) throw new UnauthorizedException('Refresh token not found');
     return user;
   }
 }
