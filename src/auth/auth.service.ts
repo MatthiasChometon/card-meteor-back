@@ -70,7 +70,7 @@ export class AuthService {
   private async signRefreshToken(user: User, expiresIn: number) {
     const payload = { username: user.username, sub: user.id, expiresIn };
     const token = this.jwtService.sign(payload, {
-      secret: 'test',
+      secret: process.env.REFRESH_TOKEN_SECRET,
     });
     return token;
   }
