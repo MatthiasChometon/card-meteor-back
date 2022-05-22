@@ -33,7 +33,7 @@ export class AuthService {
     };
   }
 
-  async signup(loginUserInput: LoginUserInput) {
+  async signUp(loginUserInput: LoginUserInput) {
     const user = await this.usersService.findOne(
       'username',
       loginUserInput.username,
