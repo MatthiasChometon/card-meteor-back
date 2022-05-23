@@ -21,6 +21,11 @@ export class AuthResolver {
 
   @Mutation(() => User)
   register(@Args('loginUserInput') loginUserInput: LoginUserInput) {
-    return this.authService.signup(loginUserInput);
+    return this.authService.signUp(loginUserInput);
+  }
+
+  @Mutation(() => LoginResponse)
+  refreshTokens(@Args('refresh_token') refresh_token: string) {
+    return this.authService.refreshTokens(refresh_token);
   }
 }

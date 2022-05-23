@@ -9,6 +9,7 @@ input CreateUserInput {
 
 type LoginResponse {
   access_token: String!
+  refresh_token: String!
   user: User!
 }
 
@@ -20,6 +21,7 @@ input LoginUserInput {
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   login(loginUserInput: LoginUserInput!): LoginResponse!
+  refreshTokens(refresh_token: String!): LoginResponse!
   register(loginUserInput: LoginUserInput!): User!
 }
 
