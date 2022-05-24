@@ -1,5 +1,4 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { IsEmail } from 'class-validator';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'users' })
@@ -8,28 +7,27 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  @Field()
+  @Column({ nullable: false })
+  @Field({ nullable: false })
   last_name: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: false })
+  @Field({ nullable: false })
   first_name: string;
 
-  @Column({ unique: true })
-  @Field()
+  @Column({ unique: false, nullable: false })
+  @Field({ nullable: false })
   username: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: false })
   password: string;
 
-  @Column()
-  @IsEmail()
-  @Field()
+  @Column({ unique: false, nullable: false })
+  @Field({ nullable: false })
   email: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: false })
+  @Field({ nullable: false })
   phone: string;
 
   @Column({
