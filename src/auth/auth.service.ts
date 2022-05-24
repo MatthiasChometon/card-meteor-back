@@ -24,7 +24,7 @@ export class AuthService {
 
   async login(user: User) {
     const { access_token, refresh_token } = await this.signTokens(user);
-    await this.usersService.updateOne(user.id, 'refresh_token', refresh_token);
+    await this.usersService.updateOne(user, { refresh_token });
 
     return {
       refresh_token,
@@ -91,7 +91,7 @@ export class AuthService {
 
   private async resolveRefreshToken(refresh_token: string): Promise<User> {
     const [user] = await Promise.all([
-      this.usersService.findOne('refresh_token', refresh_token),
+      this.usersService.findOne({ refresh_token }),
       this.verifyRefreshToken(refresh_token),
     ]);
 

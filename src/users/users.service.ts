@@ -1,7 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm/repository/Repository';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -10,39 +11,32 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  private readonly users = [
-    {
-      id: 1,
-      username: 'constantin',
-      password: 'password',
-    },
-    {
-      id: 2,
-      username: 'Jijy',
-      password: 'password',
-    },
-  ];
+  async save(createUserInput: CreateUserInput): Promise<User> {
+    const userCreated = await this.userRepository.save(createUserInput);
+    return userCreated;
+  }
 
-  create(createUserInput: CreateUserInput) {
-    const user = {
-      ...createUserInput,
-      id: this.users.length,
-    };
-    this.users.push(user);
+  async findOne(userInformations: Partial<User>): Promise<User> {
+    return await this.userRepository.findOne({
+      where: { ...userInformations },
+    });
+  }
+
+  async updateOne(userToUpdate: Partial<User>, userUpdated: Partial<User>) {
+    const [user] = await Promise.all([
+      this.userRepository.findOne(userToUpdate),
+      this.userRepository.update(userToUpdate, userUpdated),
+    ]);
     return user;
   }
 
-  async findAll(): Promise<User[]> {
-    await this.userRepository.insert({ username: 'test' });
-    return this.users;
-  }
+  async create(createUserInput: CreateUserInput) {
+    const user = await this.findOne(createUserInput);
 
-  findOne(field: string, value: string) {
-    return this.users.find((user) => user[field] === value);
-  }
+    if (user) throw new UnauthorizedException('User already exist');
 
-  updateOne(userId: number, field: string, value: string) {
-    const index = this.users.findIndex((user) => user.id === userId);
-    this.users[index] = { ...this.users[index], [field]: value };
+    const password = await bcrypt.hash(createUserInput.password, 10);
+
+    return await this.save({ ...createUserInput, password });
   }
 }
