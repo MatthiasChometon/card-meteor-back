@@ -11,7 +11,7 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  async save(createUserInput: CreateUserInput): Promise<User> {
+  async save(createUserInput: Partial<User>): Promise<User> {
     const userCreated = await this.userRepository.save(createUserInput);
     return userCreated;
   }
