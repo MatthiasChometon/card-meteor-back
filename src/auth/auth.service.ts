@@ -54,6 +54,11 @@ export class AuthService {
   }
 
   private async signToken(user: User): Promise<string> {
+    const payload = {
+      username: user.username,
+      sub: user.id,
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRATION_TIME,
+    };
     const token = this.jwtService.sign(payload);
     return token;
   }
