@@ -3,7 +3,11 @@
 # ------------------------------------------------------
 
 input CreateUserInput {
+  email: String!
+  first_name: String!
+  last_name: String!
   password: String!
+  phone: String!
   username: String!
 }
 
@@ -14,23 +18,34 @@ type LoginResponse {
 }
 
 input LoginUserInput {
+  email: String!
   password: String!
-  username: String!
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): User!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   refreshTokens(refresh_token: String!): LoginResponse!
-  register(loginUserInput: LoginUserInput!): User!
+  register(createUserInput: CreateUserInput!): LoginResponse!
+  update(updateUserInput: UpdateUserInput!): User!
 }
 
 type Query {
-  user(username: String!): User!
-  users: [User!]!
+  user: String!
+}
+
+input UpdateUserInput {
+  email: String
+  first_name: String
+  last_name: String
+  password: String
+  phone: String
+  username: String
 }
 
 type User {
-  id: Int!
+  email: String!
+  first_name: String!
+  last_name: String!
+  phone: String!
   username: String!
 }
