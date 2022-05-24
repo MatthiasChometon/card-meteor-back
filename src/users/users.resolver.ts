@@ -11,11 +11,11 @@ export class UsersResolver {
 
   @Mutation(() => User)
   @UseGuards(JwtAuthGuard)
-  async update(
+  update(
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
     @Context() context,
   ): Promise<User> {
-    console.log({ updateUserInput });
-    return await this.usersService.updateOne(context.user, updateUserInput);
+    return this.usersService.updateOne(context.user, updateUserInput);
+  }
   }
 }
