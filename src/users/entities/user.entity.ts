@@ -20,8 +20,7 @@ export class User {
   @Field()
   username: string;
 
-  @Column()
-  @Field()
+  @Column({ nullable: true })
   password: string;
 
   @Column()
@@ -36,6 +35,5 @@ export class User {
   @Column({
     default: '',
   })
-  @Field()
   refresh_token: string;
 }
