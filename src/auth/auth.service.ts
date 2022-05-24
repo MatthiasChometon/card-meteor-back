@@ -33,26 +33,15 @@ export class AuthService {
     };
   }
 
-  async signUp(loginUserInput: LoginUserInput) {
-    const user = await this.usersService.findOne(
-      'username',
-      loginUserInput.username,
-    );
-
-    if (user) throw new UnauthorizedException('User already exist');
-
-    const password = await bcrypt.hash(loginUserInput.password, 10);
-
-    return this.usersService.create({
-      ...loginUserInput,
-      password,
-    });
+  async signUp(createUserInput: CreateUserInput): Promise<LoginResponse> {
+    const user = await this.usersService.create(createUserInput);
+    return await this.login(user);
   }
 
   async refreshTokens(refresh_token: string): Promise<LoginResponse> {
     const user = await this.resolveRefreshToken(refresh_token);
     const tokens = await this.signTokens(user);
-    return tokens;
+    return { ...tokens, user };
   }
 
   private async signTokens(user: User): Promise<{
