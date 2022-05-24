@@ -31,11 +31,13 @@ export class UsersService {
   }
 
   async create(createUserInput: CreateUserInput) {
-    const user = await this.findOne(createUserInput);
+    const { email, username } = createUserInput;
+    const [user, password] = await Promise.all([
+      this.findOne({ email, username }),
+      bcrypt.hash(createUserInput.password, 10),
+    ]);
 
     if (user) throw new UnauthorizedException('User already exist');
-
-    const password = await bcrypt.hash(createUserInput.password, 10);
 
     return await this.save({ ...createUserInput, password });
   }
