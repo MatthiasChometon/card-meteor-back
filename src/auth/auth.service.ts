@@ -22,7 +22,7 @@ export class AuthService {
     return user;
   }
 
-  async login(user: User) {
+  async login(user: User): Promise<LoginResponse> {
     const { access_token, refresh_token } = await this.signTokens(user);
     await this.usersService.updateOne(user, { refresh_token });
 
@@ -49,25 +49,27 @@ export class AuthService {
     });
   }
 
-  async refreshTokens(refresh_token: string) {
+  async refreshTokens(refresh_token: string): Promise<LoginResponse> {
     const user = await this.resolveRefreshToken(refresh_token);
     const tokens = await this.signTokens(user);
     return tokens;
   }
 
-  private async signTokens(user: User) {
+  private async signTokens(user: User): Promise<{
+    refresh_token: string;
+    access_token: string;
+  }> {
     const access_token = await this.signToken(user);
     const refresh_token = await this.signRefreshToken(user);
     return { access_token, refresh_token };
   }
 
-  private async signToken(user: User, expiresIn?: number) {
-    const payload = { username: user.username, sub: user.id, expiresIn };
+  private async signToken(user: User): Promise<string> {
     const token = this.jwtService.sign(payload);
     return token;
   }
 
-  private async signRefreshToken(user: User) {
+  private async signRefreshToken(user: User): Promise<string> {
     const payload = {
       username: user.username,
       sub: user.id,
@@ -79,7 +81,7 @@ export class AuthService {
     return token;
   }
 
-  private async verifyRefreshToken(refresh_token: string) {
+  private async verifyRefreshToken(refresh_token: string): Promise<void> {
     try {
       await this.jwtService.verifyAsync(refresh_token, {
         secret: process.env.REFRESH_TOKEN_SECRET,
