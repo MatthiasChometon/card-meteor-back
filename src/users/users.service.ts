@@ -22,12 +22,16 @@ export class UsersService {
     });
   }
 
-  async updateOne(userToUpdate: Partial<User>, userUpdated: Partial<User>) {
-    const [user] = await Promise.all([
-      this.userRepository.findOne(userToUpdate),
-      this.userRepository.update(userToUpdate, userUpdated),
-    ]);
-    return user;
+  async updateOne(
+    userToUpdate: Partial<User>,
+    payload: Partial<User>,
+  ): Promise<User> {
+    const user = await this.findOne(userToUpdate);
+
+    if (!user) throw new UnauthorizedException('User not exist');
+
+    const userUpdated = { ...user, ...payload };
+    return await this.save(userUpdated);
   }
 
   async create(createUserInput: CreateUserInput) {
