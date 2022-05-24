@@ -9,7 +9,7 @@ import { UpdateUserInput } from './dto/update-user.input';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Mutation(() => User, { name: 'user' })
+  @Mutation(() => User)
   @UseGuards(JwtAuthGuard)
   async update(
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
