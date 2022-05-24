@@ -13,8 +13,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<User | null> {
-    const user = await this.usersService.findOne({ username });
+  async validateUser(email: string, password: string): Promise<User | null> {
+    const user = await this.usersService.findOne({ email });
     if (!user) throw new UnauthorizedException();
 
     const isPasswordValid = await bcrypt.compare(password, user?.password);
@@ -66,7 +66,7 @@ export class AuthService {
 
   private async signRefreshToken(user: User): Promise<string> {
     const payload = {
-      username: user.username,
+      email: user.email,
       sub: user.id,
       expiresIn: process.env.REFRESH_TOKEN_EXPIRATION_TIME,
     };
