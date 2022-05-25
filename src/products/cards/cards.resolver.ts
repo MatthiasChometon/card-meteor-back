@@ -3,6 +3,7 @@ import { CardsService } from './cards.service';
 import { Card } from './entities/card.entity';
 import { CreateCardInput } from './dto/create-card.input';
 import { UpdateCardInput } from './dto/update-card.input';
+import { GetCardInput } from './dto/get-card.input';
 
 @Resolver(() => Card)
 export class CardsResolver {
@@ -23,7 +24,7 @@ export class CardsResolver {
   }
 
   @Query(() => [Card])
-  cards(@Args('name') name: string): Promise<Card[]> {
-    return this.cardsService.get(name);
+  cards(@Args('getCardInput') getCardInput?: GetCardInput): Promise<Card[]> {
+    return this.cardsService.get(getCardInput);
   }
 }
