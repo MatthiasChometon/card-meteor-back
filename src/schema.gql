@@ -2,10 +2,41 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Card {
+  attack: Float!
+  attribute: String!
+  backgroundPicture: String!
+  coverPicture: String!
+  defense: Float!
+  description: String!
+  edition: String!
+  editor: String!
+  level: Float!
+  limitation: Float!
+  name: String!
+  price: Float!
+  state: Float!
+}
+
+input CreateCardInput {
+  attack: Float!
+  attribute: String!
+  backgroundPicture: String!
+  coverPicture: String!
+  defense: Float!
+  description: String!
+  edition: String!
+  editor: String!
+  level: Float!
+  limitation: Float!
+  name: String!
+  state: Float!
+}
+
 input CreateUserInput {
   email: String!
-  first_name: String!
-  last_name: String!
+  firstName: String!
+  lastName: String!
   password: String!
   phone: String!
   username: String!
@@ -13,7 +44,7 @@ input CreateUserInput {
 
 type LoginResponse {
   access_token: String!
-  refresh_token: String!
+  refreshToken: String!
   user: User!
 }
 
@@ -23,20 +54,39 @@ input LoginUserInput {
 }
 
 type Mutation {
+  createCard(createCardInput: CreateCardInput!): Card!
   login(loginUserInput: LoginUserInput!): LoginResponse!
-  refreshTokens(refresh_token: String!): LoginResponse!
+  refreshTokens(refreshToken: String!): LoginResponse!
   register(createUserInput: CreateUserInput!): LoginResponse!
   update(updateUserInput: UpdateUserInput!): User!
+  updateCard(updateCardInput: UpdateCardInput!): Card!
 }
 
 type Query {
+  cards(name: String!): [Card!]!
   user: String!
+}
+
+input UpdateCardInput {
+  attack: Float
+  attribute: String
+  backgroundPicture: String
+  coverPicture: String
+  defense: Float
+  description: String
+  edition: String
+  editor: String
+  id: Int!
+  level: Float
+  limitation: Float
+  name: String
+  state: Float
 }
 
 input UpdateUserInput {
   email: String
-  first_name: String
-  last_name: String
+  firstName: String
+  lastName: String
   password: String
   phone: String
   username: String
@@ -44,8 +94,8 @@ input UpdateUserInput {
 
 type User {
   email: String!
-  first_name: String!
-  last_name: String!
+  firstName: String!
+  lastName: String!
   phone: String!
   username: String!
 }
