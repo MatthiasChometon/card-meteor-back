@@ -9,11 +9,11 @@ export class User {
 
   @Column({ nullable: false })
   @Field({ nullable: false })
-  last_name: string;
+  lastName: string;
 
   @Column({ nullable: false })
   @Field({ nullable: false })
-  first_name: string;
+  firstName: string;
 
   @Column({ unique: false, nullable: false })
   @Field({ nullable: false })
@@ -33,5 +33,5 @@ export class User {
   @Column({
     default: '',
   })
-  refresh_token: string;
+  refreshToken: string;
 }

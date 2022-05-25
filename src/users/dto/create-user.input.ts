@@ -4,10 +4,10 @@ import { IsEmail, MinLength } from 'class-validator';
 @InputType()
 export class CreateUserInput {
   @Field({ nullable: false })
-  last_name: string;
+  lastName: string;
 
   @Field({ nullable: false })
-  first_name: string;
+  firstName: string;
 
   @Field({ nullable: false })
   username: string;

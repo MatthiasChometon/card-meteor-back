@@ -24,11 +24,11 @@ export class AuthService {
   }
 
   async login(user: User): Promise<LoginResponse> {
-    const { access_token, refresh_token } = await this.signTokens(user);
-    await this.usersService.updateOne(user, { refresh_token });
+    const { access_token, refreshToken } = await this.signTokens(user);
+    await this.usersService.updateOne(user, { refreshToken });
 
     return {
-      refresh_token,
+      refreshToken,
       access_token,
       user,
     };
@@ -39,19 +39,19 @@ export class AuthService {
     return await this.login(user);
   }
 
-  async refreshTokens(refresh_token: string): Promise<LoginResponse> {
-    const user = await this.resolveRefreshToken(refresh_token);
+  async refreshTokens(refreshToken: string): Promise<LoginResponse> {
+    const user = await this.resolveRefreshToken(refreshToken);
     const tokens = await this.signTokens(user);
     return { ...tokens, user };
   }
 
   private async signTokens(user: User): Promise<{
-    refresh_token: string;
+    refreshToken: string;
     access_token: string;
   }> {
     const access_token = await this.signToken(user);
-    const refresh_token = await this.signRefreshToken(user);
-    return { access_token, refresh_token };
+    const refreshToken = await this.signRefreshToken(user);
+    return { access_token, refreshToken };
   }
 
   private async signToken(user: User): Promise<string> {
@@ -76,9 +76,9 @@ export class AuthService {
     return token;
   }
 
-  private async verifyRefreshToken(refresh_token: string): Promise<void> {
+  private async verifyRefreshToken(refreshToken: string): Promise<void> {
     try {
-      await this.jwtService.verifyAsync(refresh_token, {
+      await this.jwtService.verifyAsync(refreshToken, {
         secret: process.env.REFRESH_TOKEN_SECRET,
       });
     } catch (err) {
@@ -86,10 +86,10 @@ export class AuthService {
     }
   }
 
-  private async resolveRefreshToken(refresh_token: string): Promise<User> {
+  private async resolveRefreshToken(refreshToken: string): Promise<User> {
     const [user] = await Promise.all([
-      this.usersService.findOne({ refresh_token }),
-      this.verifyRefreshToken(refresh_token),
+      this.usersService.findOne({ refreshToken }),
+      this.verifyRefreshToken(refreshToken),
     ]);
 
     if (!user) throw new UnauthorizedException('Refresh token not found');
