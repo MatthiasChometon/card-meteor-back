@@ -15,7 +15,8 @@ type Card {
   limitation: Float!
   name: String!
   price: Float!
-  state: Float!
+  step: Float!
+  updateDate: DateTime!
 }
 
 input CreateCardInput {
@@ -30,7 +31,7 @@ input CreateCardInput {
   level: Float!
   limitation: Float!
   name: String!
-  state: Float!
+  step: Float!
 }
 
 input CreateUserInput {
@@ -40,6 +41,28 @@ input CreateUserInput {
   password: String!
   phone: String!
   username: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+input GetCardFilterInput {
+  editor: String
+  name: String
+  pagination: PaginationInput
+  step: Int
+}
+
+input GetCardInput {
+  filterBy: GetCardFilterInput
+  orderBy: GetCardOrderByInput
+}
+
+input GetCardOrderByInput {
+  direction: String
+  name: String
 }
 
 type LoginResponse {
@@ -62,8 +85,13 @@ type Mutation {
   updateCard(updateCardInput: UpdateCardInput!): Card!
 }
 
+input PaginationInput {
+  end: Float!
+  start: Float!
+}
+
 type Query {
-  cards(name: String!): [Card!]!
+  cards(getCardInput: GetCardInput!): [Card!]!
   user: String!
 }
 
@@ -80,7 +108,7 @@ input UpdateCardInput {
   level: Float
   limitation: Float
   name: String
-  state: Float
+  step: Float
 }
 
 input UpdateUserInput {
