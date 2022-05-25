@@ -58,5 +58,7 @@ export class Card {
 
   @Column()
   @Field()
-  state: number;
+  @UpdateDateColumn()
+  @Field(() => Date)
+  updateDate: Date;
 }
