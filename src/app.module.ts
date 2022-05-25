@@ -5,6 +5,7 @@ import { join } from 'path';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config/dist/config.module';
+import { CardsModule } from './products/cards/cards.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ConfigModule } from '@nestjs/config/dist/config.module';
     }),
     UsersModule,
     AuthModule,
+    CardsModule,
   ],
   controllers: [],
   providers: [],
