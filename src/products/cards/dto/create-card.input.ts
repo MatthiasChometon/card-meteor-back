@@ -36,5 +36,5 @@ export class CreateCardInput {
   backgroundPicture: string;
 
   @Field()
-  state: number;
+  step: number;
 }

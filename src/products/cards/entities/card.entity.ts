@@ -1,5 +1,11 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity({ name: 'cards' })
 @ObjectType()
@@ -58,6 +64,8 @@ export class Card {
 
   @Column()
   @Field()
+  step: number;
+
   @UpdateDateColumn()
   @Field(() => Date)
   updateDate: Date;
