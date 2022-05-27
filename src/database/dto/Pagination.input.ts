@@ -1,10 +1,10 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class LoginUserInput {
+export class PaginationInput {
   @Field()
-  email: string;
+  start: number;
 
   @Field()
-  password: string;
+  end: number;
 }

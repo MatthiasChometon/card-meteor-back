@@ -4,7 +4,7 @@ import { User } from '../../users/entities/user.entity';
 @ObjectType()
 export class LoginResponse {
   @Field()
-  refresh_token: string;
+  refreshToken: string;
 
   @Field()
   access_token: string;

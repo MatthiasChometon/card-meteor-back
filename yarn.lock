@@ -2726,6 +2726,11 @@ external-editor@^3.0.3:
     iconv-lite "^0.4.24"
     tmp "^0.0.33"
 
+faker@5.5.3:
+  version "5.5.3"
+  resolved "https://registry.yarnpkg.com/faker/-/faker-5.5.3.tgz#c57974ee484431b25205c2c8dc09fda861e51e0e"
+  integrity sha512-wLTv2a28wjUyWkbnX7u/ABZBkUkIF2fCd73V6P2oFqEGEktDfzWx4UxrSqtPRw0xPRAcjeAOIiJWqZm3pP4u3g==
+
 fast-decode-uri-component@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/fast-decode-uri-component/-/fast-decode-uri-component-1.0.1.tgz#46f8b6c22b30ff7a81357d4f59abfae938202543"
@@ -5567,6 +5572,11 @@ typedarray-to-buffer@^3.1.5:
   integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
   dependencies:
     is-typedarray "^1.0.0"
+
+typeorm-factories@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/typeorm-factories/-/typeorm-factories-1.0.1.tgz#f41dd569c7859de1c1d8742efabc0f621701442d"
+  integrity sha512-TMipbsCOeQB3y1MuhBTkPgBhmfC9vdE12+aTN+tCmVJFw21I+wIMnhJ72XPTQUyrbamhwgn79mW9/xCHA5M3LQ==
 
 typeorm@0.2:
   version "0.2.45"

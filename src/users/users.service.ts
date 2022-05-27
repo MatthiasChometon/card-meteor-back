@@ -1,7 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm/repository/Repository';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -10,39 +11,38 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  private readonly users = [
-    {
-      id: 1,
-      username: 'constantin',
-      password: 'password',
-    },
-    {
-      id: 2,
-      username: 'Jijy',
-      password: 'password',
-    },
-  ];
-
-  create(createUserInput: CreateUserInput) {
-    const user = {
-      ...createUserInput,
-      id: this.users.length,
-    };
-    this.users.push(user);
-    return user;
+  async save(createUserInput: Partial<User>): Promise<User> {
+    const userCreated = await this.userRepository.save(createUserInput);
+    return userCreated;
   }
 
-  async findAll(): Promise<User[]> {
-    await this.userRepository.insert({ username: 'test' });
-    return this.users;
+  async findOne(userInformations: Partial<User>): Promise<User> {
+    return await this.userRepository.findOne({
+      where: { ...userInformations },
+    });
   }
 
-  findOne(field: string, value: string) {
-    return this.users.find((user) => user[field] === value);
+  async updateOne(
+    userToUpdate: Partial<User>,
+    payload: Partial<User>,
+  ): Promise<User> {
+    const user = await this.findOne(userToUpdate);
+
+    if (!user) throw new UnauthorizedException('User not exist');
+
+    const userUpdated = { ...user, ...payload };
+    return await this.save(userUpdated);
   }
 
-  updateOne(userId: number, field: string, value: string) {
-    const index = this.users.findIndex((user) => user.id === userId);
-    this.users[index] = { ...this.users[index], [field]: value };
+  async create(createUserInput: CreateUserInput) {
+    const { email, username } = createUserInput;
+    const [user, password] = await Promise.all([
+      this.findOne({ email, username }),
+      bcrypt.hash(createUserInput.password, 10),
+    ]);
+
+    if (user) throw new UnauthorizedException('User already exist');
+
+    return await this.save({ ...createUserInput, password });
   }
 }

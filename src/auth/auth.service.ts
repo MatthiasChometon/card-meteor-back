@@ -2,8 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
-import { LoginUserInput } from './dto/login-user.input';
 import * as bcrypt from 'bcrypt';
+import { CreateUserInput } from 'src/users/dto/create-user.input';
+import { LoginResponse } from './dto/login-response';
 
 @Injectable()
 export class AuthService {
@@ -12,8 +13,8 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<User | null> {
-    const user = await this.usersService.findOne('username', username);
+  async validateUser(email: string, password: string): Promise<User | null> {
+    const user = await this.usersService.findOne({ email });
     if (!user) throw new UnauthorizedException();
 
     const isPasswordValid = await bcrypt.compare(password, user?.password);
@@ -22,54 +23,50 @@ export class AuthService {
     return user;
   }
 
-  async login(user: User) {
-    const { access_token, refresh_token } = await this.signTokens(user);
-    await this.usersService.updateOne(user.id, 'refresh_token', refresh_token);
+  async login(user: User): Promise<LoginResponse> {
+    const { access_token, refreshToken } = await this.signTokens(user);
+    await this.usersService.updateOne(user, { refreshToken });
 
     return {
-      refresh_token,
+      refreshToken,
       access_token,
       user,
     };
   }
 
-  async signUp(loginUserInput: LoginUserInput) {
-    const user = await this.usersService.findOne(
-      'username',
-      loginUserInput.username,
-    );
-
-    if (user) throw new UnauthorizedException('User already exist');
-
-    const password = await bcrypt.hash(loginUserInput.password, 10);
-
-    return this.usersService.create({
-      ...loginUserInput,
-      password,
-    });
+  async signUp(createUserInput: CreateUserInput): Promise<LoginResponse> {
+    const user = await this.usersService.create(createUserInput);
+    return await this.login(user);
   }
 
-  async refreshTokens(refresh_token: string) {
-    const user = await this.resolveRefreshToken(refresh_token);
+  async refreshTokens(refreshToken: string): Promise<LoginResponse> {
+    const user = await this.resolveRefreshToken(refreshToken);
     const tokens = await this.signTokens(user);
-    return tokens;
+    return { ...tokens, user };
   }
 
-  private async signTokens(user: User) {
+  private async signTokens(user: User): Promise<{
+    refreshToken: string;
+    access_token: string;
+  }> {
     const access_token = await this.signToken(user);
-    const refresh_token = await this.signRefreshToken(user);
-    return { access_token, refresh_token };
+    const refreshToken = await this.signRefreshToken(user);
+    return { access_token, refreshToken };
   }
 
-  private async signToken(user: User, expiresIn?: number) {
-    const payload = { username: user.username, sub: user.id, expiresIn };
+  private async signToken(user: User): Promise<string> {
+    const payload = {
+      username: user.username,
+      sub: user.id,
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRATION_TIME,
+    };
     const token = this.jwtService.sign(payload);
     return token;
   }
 
-  private async signRefreshToken(user: User) {
+  private async signRefreshToken(user: User): Promise<string> {
     const payload = {
-      username: user.username,
+      email: user.email,
       sub: user.id,
       expiresIn: process.env.REFRESH_TOKEN_EXPIRATION_TIME,
     };
@@ -79,9 +76,9 @@ export class AuthService {
     return token;
   }
 
-  private async verifyRefreshToken(refresh_token: string) {
+  private async verifyRefreshToken(refreshToken: string): Promise<void> {
     try {
-      await this.jwtService.verifyAsync(refresh_token, {
+      await this.jwtService.verifyAsync(refreshToken, {
         secret: process.env.REFRESH_TOKEN_SECRET,
       });
     } catch (err) {
@@ -89,10 +86,10 @@ export class AuthService {
     }
   }
 
-  private async resolveRefreshToken(refresh_token: string): Promise<User> {
+  private async resolveRefreshToken(refreshToken: string): Promise<User> {
     const [user] = await Promise.all([
-      this.usersService.findOne('refresh_token', refresh_token),
-      this.verifyRefreshToken(refresh_token),
+      this.usersService.findOne({ refreshToken }),
+      this.verifyRefreshToken(refreshToken),
     ]);
 
     if (!user) throw new UnauthorizedException('Refresh token not found');
