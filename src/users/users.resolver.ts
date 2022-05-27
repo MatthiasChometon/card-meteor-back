@@ -7,7 +7,7 @@ import { UpdateUserInput } from './dto/update-user.input';
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Mutation(() => User)
   @UseGuards(JwtAuthGuard)
@@ -16,6 +16,5 @@ export class UsersResolver {
     @Context() context,
   ): Promise<User> {
     return this.usersService.updateOne(context.user, updateUserInput);
-  }
   }
 }
