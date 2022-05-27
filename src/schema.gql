@@ -92,7 +92,6 @@ input PaginationInput {
 
 type Query {
   cards(getCardInput: GetCardInput!): [Card!]!
-  user: String!
 }
 
 input UpdateCardInput {
