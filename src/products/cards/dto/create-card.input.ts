@@ -37,4 +37,7 @@ export class CreateCardInput {
 
   @Field()
   step: number;
+
+  @Field()
+  archetype: string;
 }

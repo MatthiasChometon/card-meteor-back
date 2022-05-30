@@ -69,4 +69,8 @@ export class Card {
   @UpdateDateColumn()
   @Field(() => Date)
   updateDate: Date;
+
+  @Column()
+  @Field()
+  archetype: string;
 }
