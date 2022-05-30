@@ -34,17 +34,17 @@ export class CardsService {
     return await this.save(cardUpdated);
   }
 
-  search(key: string, value: string) {
+  search(key: string, value: string | number) {
+    const valueToSearch =
+      typeof value === 'string' ? value.toLowerCase() : value.toString();
     this.query = this.query.where(`${key} LIKE :${key}`, {
-      [key]: `%${value}%`,
+      [key]: `%${valueToSearch}%`,
     });
   }
 
   filter(key: string, value: string | number) {
-    const valueToSearch =
-      typeof value === 'string' ? value.toLowerCase() : value.toString();
-    this.query = this.query.where(`${key} = :${key}`, {
-      [key]: `${valueToSearch}`,
+    this.query = this.query.andWhere(`${key} = :${key}`, {
+      [key]: `${value}`,
     });
   }
 
@@ -56,8 +56,8 @@ export class CardsService {
     this.filter('step', step);
   }
 
-  filterByEditor(editor: string) {
-    this.filter('editor', editor);
+  filterByEditor(id: string) {
+    this.filter('editor', id);
   }
 
   paginate(pagination: PaginationInput) {
