@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 type Card {
+  archetype: String!
   attack: Float!
   attribute: String!
   backgroundPicture: String!
@@ -20,6 +21,7 @@ type Card {
 }
 
 input CreateCardInput {
+  archetype: String!
   attack: Float!
   attribute: String!
   backgroundPicture: String!
@@ -95,6 +97,7 @@ type Query {
 }
 
 input UpdateCardInput {
+  archetype: String
   attack: Float
   attribute: String
   backgroundPicture: String
