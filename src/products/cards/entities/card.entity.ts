@@ -1,8 +1,10 @@
 import { ObjectType, Field } from '@nestjs/graphql';
+import { OrderProduct } from '../../../order/entities/order-product.entity';
 import {
   Column,
   Entity,
   Index,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -59,7 +61,7 @@ export class Card {
   @Field()
   backgroundPicture: string;
 
-  @Column({ default: 0.1 })
+  @Column({ default: 0.1, type: 'float' })
   @Field()
   price: number;
 
@@ -74,4 +76,9 @@ export class Card {
   @Column()
   @Field()
   archetype: string;
+
+  @OneToMany(() => OrderProduct, (orderProduct) => orderProduct.order, {
+    cascade: true,
+  })
+  orderProducts: OrderProduct[];
 }
