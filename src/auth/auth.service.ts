@@ -25,7 +25,7 @@ export class AuthService {
 
   async login(user: User): Promise<LoginResponse> {
     const { accessToken, refreshToken } = await this.signTokens(user);
-    await this.usersService.updateOne(user, { refreshToken });
+    await this.usersService.updateOne(user.id, { refreshToken });
 
     return {
       refreshToken,
