@@ -11,6 +11,7 @@ import {
 @ObjectType()
 export class Card {
   @PrimaryGeneratedColumn()
+  @Field()
   id: number;
 
   @Index({ fulltext: true })

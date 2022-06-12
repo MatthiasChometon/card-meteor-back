@@ -12,6 +12,7 @@ type Card {
   description: String!
   edition: String!
   editor: String!
+  id: Float!
   level: Float!
   limitation: Float!
   name: String!
