@@ -15,6 +15,9 @@ export class UsersResolver {
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
     @Context() context,
   ): Promise<User> {
-    return this.usersService.updateOne(context.user, updateUserInput);
+    return this.usersService.updateOne(
+      context.req.user.userId,
+      updateUserInput,
+    );
   }
 }

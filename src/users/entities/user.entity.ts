@@ -1,5 +1,6 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Order } from '../../order/entities/order.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'users' })
 @ObjectType()
@@ -41,4 +42,8 @@ export class User {
     default: 'user',
   })
   role: string;
+
+  @Field(() => [Order], { nullable: false })
+  @OneToMany(() => Order, (order) => order.buyer, { cascade: true })
+  orders: Order[];
 }

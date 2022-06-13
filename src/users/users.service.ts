@@ -22,11 +22,10 @@ export class UsersService {
     });
   }
 
-  async updateOne(
-    userToUpdate: Partial<User>,
-    payload: Partial<User>,
-  ): Promise<User> {
-    const user = await this.findOne(userToUpdate);
+  async updateOne(userId: number, payload: Partial<User>): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
 
     if (!user) throw new UnauthorizedException('User not exist');
 

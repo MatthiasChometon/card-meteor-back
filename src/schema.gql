@@ -12,6 +12,7 @@ type Card {
   description: String!
   edition: String!
   editor: String!
+  id: Float!
   level: Float!
   limitation: Float!
   name: String!
@@ -34,6 +35,10 @@ input CreateCardInput {
   limitation: Float!
   name: String!
   step: Float!
+}
+
+input CreateOrderInput {
+  products: [ProductInput!]!
 }
 
 input CreateUserInput {
@@ -80,6 +85,7 @@ input LoginUserInput {
 
 type Mutation {
   createCard(createCardInput: CreateCardInput!): Card!
+  createOrder(createOrderInput: CreateOrderInput!): Order!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   refreshTokens(refreshToken: String!): LoginResponse!
   register(createUserInput: CreateUserInput!): LoginResponse!
@@ -87,9 +93,26 @@ type Mutation {
   updateCard(updateCardInput: UpdateCardInput!): Card!
 }
 
+type Order {
+  creationDate: DateTime!
+  deliveryDate: DateTime!
+  id: Float!
+  productsPrice: Float!
+  shippingCostPrice: Float!
+  state: Float!
+  totalPrice: Float!
+  trackingNumber: String!
+}
+
 input PaginationInput {
   end: Float!
   start: Float!
+}
+
+input ProductInput {
+  id: Float!
+  number: Float!
+  price: Float!
 }
 
 type Query {
@@ -127,6 +150,7 @@ type User {
   firstName: String!
   id: Float!
   lastName: String!
+  orders: [Order!]!
   phone: String!
   role: String!
   username: String!
