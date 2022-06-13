@@ -4,6 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity({ name: 'users' })
 @ObjectType()
 export class User {
+  @Field()
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -34,4 +35,10 @@ export class User {
     default: '',
   })
   refreshToken: string;
+
+  @Field({ nullable: false })
+  @Column({
+    default: 'user',
+  })
+  role: string;
 }

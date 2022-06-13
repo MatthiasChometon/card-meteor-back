@@ -24,12 +24,12 @@ export class AuthService {
   }
 
   async login(user: User): Promise<LoginResponse> {
-    const { access_token, refreshToken } = await this.signTokens(user);
+    const { accessToken, refreshToken } = await this.signTokens(user);
     await this.usersService.updateOne(user, { refreshToken });
 
     return {
       refreshToken,
-      access_token,
+      accessToken,
       user,
     };
   }
@@ -47,11 +47,11 @@ export class AuthService {
 
   private async signTokens(user: User): Promise<{
     refreshToken: string;
-    access_token: string;
+    accessToken: string;
   }> {
-    const access_token = await this.signToken(user);
+    const accessToken = await this.signToken(user);
     const refreshToken = await this.signRefreshToken(user);
-    return { access_token, refreshToken };
+    return { accessToken, refreshToken };
   }
 
   private async signToken(user: User): Promise<string> {
