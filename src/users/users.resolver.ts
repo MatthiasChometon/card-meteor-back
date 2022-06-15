@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Context, Query } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { UseGuards } from '@nestjs/common';
@@ -19,5 +19,11 @@ export class UsersResolver {
       context.req.user.userId,
       updateUserInput,
     );
+  }
+
+  @Query(() => User)
+  @UseGuards(JwtAuthGuard)
+  account(@Context() context): Promise<User> {
+    return this.usersService.findOne({ id: context.req.user.userId });
   }
 }
