@@ -116,6 +116,7 @@ input ProductInput {
 }
 
 type Query {
+  account: User!
   cards(getCardInput: GetCardInput!): [Card!]!
 }
 
