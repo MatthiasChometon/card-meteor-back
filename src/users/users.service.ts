@@ -30,6 +30,9 @@ export class UsersService {
     if (!user) throw new UnauthorizedException('User not exist');
 
     const userUpdated = { ...user, ...payload };
+
+    if (payload.password)
+      userUpdated.password = await this.hashPassword(payload);
     return await this.save(userUpdated);
   }
 
@@ -37,11 +40,15 @@ export class UsersService {
     const { email, username } = createUserInput;
     const [user, password] = await Promise.all([
       this.findOne({ email, username }),
-      bcrypt.hash(createUserInput.password, 10),
+      this.hashPassword(createUserInput),
     ]);
 
     if (user) throw new UnauthorizedException('User already exist');
 
     return await this.save({ ...createUserInput, password });
+  }
+
+  async hashPassword(createUserInput: Partial<User>) {
+    return bcrypt.hash(createUserInput.password, 10);
   }
 }
