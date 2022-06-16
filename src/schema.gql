@@ -89,7 +89,7 @@ type Mutation {
   login(loginUserInput: LoginUserInput!): LoginResponse!
   refreshTokens(refreshToken: String!): LoginResponse!
   register(createUserInput: CreateUserInput!): LoginResponse!
-  update(updateUserInput: UpdateUserInput!): User!
+  updateAccount(updateUserInput: UpdateUserInput!): User!
   updateCard(updateCardInput: UpdateCardInput!): Card!
 }
 
