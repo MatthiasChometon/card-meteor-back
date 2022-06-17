@@ -11,7 +11,7 @@ export class UsersResolver {
 
   @Mutation(() => User)
   @UseGuards(JwtAuthGuard)
-  update(
+  updateAccount(
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
     @Context() context,
   ): Promise<User> {
