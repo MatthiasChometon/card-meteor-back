@@ -4,12 +4,15 @@ import { Card } from './entities/card.entity';
 import { CreateCardInput } from './dto/create-card.input';
 import { GetCardInput } from './dto/get-card.input';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
+import { CardsListService } from './cardsList.service';
 import { UpdateCardInput } from './dto/update-card.input';
-import { GetCardInput } from './dto/get-card.input';
 
-@Resolver(() => Card)
+@Resolver()
 export class CardsResolver {
-  constructor(private readonly cardsService: CardsService) {}
+  constructor(
+    private readonly cardsService: CardsService,
+    private readonly cardsListService: CardsListService,
+  ) {}
 
   @Mutation(() => Card)
   createCard(
@@ -35,6 +38,6 @@ export class CardsResolver {
 
   @Query(() => [Card])
   cards(@Args('getCardInput') getCardInput?: GetCardInput): Promise<Card[]> {
-    return this.cardsService.get(getCardInput);
+    return this.cardsListService.get(getCardInput);
   }
 }
