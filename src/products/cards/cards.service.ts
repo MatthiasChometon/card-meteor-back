@@ -31,62 +31,6 @@ export class CardsService {
     if (!card) throw new UnauthorizedException('Card not exist');
 
     const cardUpdated = { ...card, ...payload };
-    return await this.save(cardUpdated);
-  }
-
-  search(key: string, value: string | number) {
-    const valueToSearch =
-      typeof value === 'string' ? value.toLowerCase() : value.toString();
-    this.query = this.query.where(`${key} LIKE :${key}`, {
-      [key]: `%${valueToSearch}%`,
-    });
-  }
-
-  filter(key: string, value: string | number) {
-    this.query = this.query.andWhere(`${key} = :${key}`, {
-      [key]: `${value}`,
-    });
-  }
-
-  searchByName(name: string) {
-    this.search('name', name);
-  }
-
-  filterByStep(step: number) {
-    this.filter('step', step);
-  }
-
-  filterByEditor(id: string) {
-    this.filter('editor', id);
-  }
-
-  paginate(pagination: PaginationInput) {
-    this.query = this.query.limit(pagination.end).offset(pagination.start);
-  }
-
-  orderBy(orderBy?: GetCardOrderByInput) {
-    const defaultQueryOrderBy: GetCardOrderByInput = {
-      name: CardOrderBy.updateDate,
-      direction: 'ASC',
-    };
-
-    const name = orderBy?.name ?? defaultQueryOrderBy.name;
-    const direction = orderBy?.direction || defaultQueryOrderBy.direction;
-
-    this.query = this.query.orderBy(name, direction);
-  }
-
-  async get(getCardInput: GetCardInput): Promise<Card[]> {
-    const { orderBy, filterBy } = getCardInput;
-    this.query = this.cardRepository.createQueryBuilder().select();
-
-    if (filterBy?.name) this.searchByName(filterBy.name);
-    if (filterBy?.pagination) this.paginate(filterBy.pagination);
-    if (filterBy?.step) this.filterByStep(filterBy.step);
-    if (filterBy?.editor) this.filterByEditor(filterBy.editor);
-
-    this.orderBy(orderBy);
-
-    return await this.query.getMany();
+    return await this.cardRepository.save(cardUpdated);
   }
 }
