@@ -4,37 +4,42 @@
 
 type Card {
   archetype: String!
-  attack: Float!
+  attack: String!
   attribute: String!
   backgroundPicture: String!
   coverPicture: String!
-  defense: Float!
+  defense: String!
   description: String!
   edition: String!
   editor: String!
+  hasEffect: Boolean!
   id: Float!
   level: Float!
   limitation: Float!
   name: String!
   price: Float!
+  race: String!
+  serialNumber: Float!
   step: Float!
+  type: String!
   updateDate: DateTime!
 }
 
 input CreateCardInput {
   archetype: String!
-  attack: Float!
+  attack: String!
   attribute: String!
-  backgroundPicture: String!
-  coverPicture: String!
-  defense: Float!
+  defense: String!
   description: String!
   edition: String!
   editor: String!
+  hasEffect: Boolean!
   level: Float!
   limitation: Float!
   name: String!
-  step: Float!
+  race: String!
+  serialNumber: Float!
+  type: String!
 }
 
 input CreateOrderInput {
@@ -84,13 +89,12 @@ input LoginUserInput {
 }
 
 type Mutation {
-  createCard(createCardInput: CreateCardInput!): Card!
+  createCard(backgroundPicture: Upload!, coverPicture: Upload!, createCardInput: CreateCardInput!): Card!
   createOrder(createOrderInput: CreateOrderInput!): Order!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   refreshTokens(refreshToken: String!): LoginResponse!
   register(createUserInput: CreateUserInput!): LoginResponse!
   updateAccount(updateUserInput: UpdateUserInput!): User!
-  updateCard(updateCardInput: UpdateCardInput!): Card!
 }
 
 type Order {
@@ -120,23 +124,6 @@ type Query {
   cards(getCardInput: GetCardInput!): [Card!]!
 }
 
-input UpdateCardInput {
-  archetype: String
-  attack: Float
-  attribute: String
-  backgroundPicture: String
-  coverPicture: String
-  defense: Float
-  description: String
-  edition: String
-  editor: String
-  id: Int!
-  level: Float
-  limitation: Float
-  name: String
-  step: Float
-}
-
 input UpdateUserInput {
   email: String
   firstName: String
@@ -145,6 +132,9 @@ input UpdateUserInput {
   phone: String
   username: String
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 type User {
   email: String!
