@@ -30,9 +30,6 @@ export class CreateCardInput {
   edition: string;
 
   @Field()
-  editor: string;
-
-  @Field()
   limitation: number;
 
   @Field()
