@@ -15,15 +15,12 @@ export class UsersResolver {
     @Args('updateUserInput') updateUserInput: UpdateUserInput,
     @Context() context,
   ): Promise<User> {
-    return this.usersService.updateOne(
-      context.req.user.userId,
-      updateUserInput,
-    );
+    return this.usersService.updateOne(context.req.user.id, updateUserInput);
   }
 
   @Query(() => User)
   @UseGuards(JwtAuthGuard)
   account(@Context() context): Promise<User> {
-    return this.usersService.findOne({ id: context.req.user.userId });
+    return this.usersService.findOne({ id: context.req.user.id });
   }
 }
