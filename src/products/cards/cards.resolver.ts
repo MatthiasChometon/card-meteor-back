@@ -14,6 +14,7 @@ export class CardsResolver {
     private readonly cardsListService: CardsListService,
   ) {}
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => Card)
   createCard(
     @Args('createCardInput') createCardInput: CreateCardInput,
@@ -21,6 +22,8 @@ export class CardsResolver {
     coverPicture: FileUpload,
     @Args({ name: 'backgroundPicture', type: () => GraphQLUpload })
     backgroundPicture: FileUpload,
+    @Context()
+    context,
   ): Promise<Card> {
     const editor = context.req.user.username;
     return this.cardsService.create(
