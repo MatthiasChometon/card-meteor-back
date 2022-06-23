@@ -22,10 +22,12 @@ export class CardsResolver {
     @Args({ name: 'backgroundPicture', type: () => GraphQLUpload })
     backgroundPicture: FileUpload,
   ): Promise<Card> {
+    const editor = context.req.user.username;
     return this.cardsService.create(
       createCardInput,
       coverPicture,
       backgroundPicture,
+      editor,
     );
   }
 
