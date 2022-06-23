@@ -32,7 +32,6 @@ input CreateCardInput {
   defense: String!
   description: String!
   edition: String!
-  editor: String!
   hasEffect: Boolean!
   level: Float!
   limitation: Float!
@@ -95,6 +94,7 @@ type Mutation {
   refreshTokens(refreshToken: String!): LoginResponse!
   register(createUserInput: CreateUserInput!): LoginResponse!
   updateAccount(updateUserInput: UpdateUserInput!): User!
+  updateUserCard(backgroundPicture: Upload, coverPicture: Upload!, updateCardInput: UpdateCardInput!): Card!
 }
 
 type Order {
@@ -122,6 +122,24 @@ input ProductInput {
 type Query {
   account: User!
   cards(getCardInput: GetCardInput!): [Card!]!
+  userCard(id: Float!): Card!
+}
+
+input UpdateCardInput {
+  archetype: String
+  attack: String
+  attribute: String
+  defense: String
+  description: String
+  edition: String
+  hasEffect: Boolean
+  id: Int!
+  level: Float
+  limitation: Float
+  name: String
+  race: String
+  serialNumber: Float
+  type: String
 }
 
 input UpdateUserInput {
