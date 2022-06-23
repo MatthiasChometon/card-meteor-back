@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { CardsService } from './cards.service';
 import { Card } from './entities/card.entity';
 import { CreateCardInput } from './dto/create-card.input';
@@ -6,6 +6,8 @@ import { GetCardInput } from './dto/get-card.input';
 import { GraphQLUpload, FileUpload } from 'graphql-upload';
 import { CardsListService } from './cardsList.service';
 import { UpdateCardInput } from './dto/update-card.input';
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
 @Resolver()
 export class CardsResolver {
@@ -35,10 +37,28 @@ export class CardsResolver {
   }
 
   @Mutation(() => Card)
-  updateCard(
+  @UseGuards(JwtAuthGuard)
+  updateUserCard(
     @Args('updateCardInput') updateCardInput: UpdateCardInput,
+    @Args({ name: 'coverPicture', type: () => GraphQLUpload })
+    coverPicture: FileUpload,
+    @Context()
+    context,
+    @Args({
+      name: 'backgroundPicture',
+      type: () => GraphQLUpload,
+      nullable: true,
+    })
+    backgroundPicture: FileUpload,
   ): Promise<Card> {
-    return this.cardsService.updateOne(updateCardInput.id, updateCardInput);
+    const editor = context.req.user.username;
+    const id = updateCardInput.id;
+    return this.cardsService.updateOne(
+      { editor, id },
+      updateCardInput,
+      coverPicture,
+      backgroundPicture,
+    );
   }
 
   @Query(() => [Card])
