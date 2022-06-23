@@ -31,11 +31,19 @@ export class Card {
 
   @Column()
   @Field()
-  attack: number;
+  attack: string;
 
   @Column()
   @Field()
-  defense: number;
+  defense: string;
+
+  @Column()
+  @Field()
+  race: string;
+
+  @Column()
+  @Field()
+  hasEffect: boolean;
 
   @Column()
   @Field()
@@ -65,9 +73,13 @@ export class Card {
   @Field()
   price: number;
 
-  @Column()
+  @Column({ default: 1 })
   @Field()
   step: number;
+
+  @Column()
+  @Field()
+  serialNumber: number;
 
   @UpdateDateColumn()
   @Field(() => Date)
@@ -76,6 +88,10 @@ export class Card {
   @Column()
   @Field()
   archetype: string;
+
+  @Column()
+  @Field()
+  type: string;
 
   @OneToMany(() => OrderProduct, (orderProduct) => orderProduct.order, {
     cascade: true,

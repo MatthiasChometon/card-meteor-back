@@ -85,8 +85,8 @@ export class OrderService {
   }
 
   private buildTrackingNumber(): void {
-    const randomDate = new Date();
-    this.order.trackingNumber = `${Math.random() * randomDate.getTime()}`;
+    const now = new Date();
+    this.order.trackingNumber = `${Math.random() * now.getTime()}`;
   }
 
   private buildDeliveryDate(): void {

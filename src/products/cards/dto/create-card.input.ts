@@ -12,10 +12,16 @@ export class CreateCardInput {
   attribute: string;
 
   @Field()
-  attack: number;
+  attack: string;
 
   @Field()
-  defense: number;
+  defense: string;
+
+  @Field()
+  race: string;
+
+  @Field()
+  hasEffect: boolean;
 
   @Field()
   description: string;
@@ -24,20 +30,14 @@ export class CreateCardInput {
   edition: string;
 
   @Field()
-  editor: string;
-
-  @Field()
   limitation: number;
 
   @Field()
-  coverPicture: string;
-
-  @Field()
-  backgroundPicture: string;
-
-  @Field()
-  step: number;
+  serialNumber: number;
 
   @Field()
   archetype: string;
+
+  @Field()
+  type: string;
 }

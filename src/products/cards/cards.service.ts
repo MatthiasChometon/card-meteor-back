@@ -1,92 +1,79 @@
-import { Injectable, UnauthorizedException, Inject } from '@nestjs/common';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { GetCardOrderByInput } from './dto/get-card-orderBy';
-import { GetCardInput } from './dto/get-card.input';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { Card } from './entities/card.entity';
-import { CardOrderBy } from './enums/card-orderBy';
-import { PaginationInput } from 'src/database/dto/Pagination.input';
+import { CreateCardInput } from './dto/create-card.input';
+import { FileUpload } from 'graphql-upload';
+import { CardsPicturesService } from './cardsPictures.service';
 
 @Injectable()
 export class CardsService {
   constructor(
     @Inject('CARDS_REPOSITORY')
     private cardRepository: Repository<Card>,
+    private cardsPicturesService: CardsPicturesService,
   ) {}
-  query: SelectQueryBuilder<Card>;
+  card: Card;
 
-  async save(createCardInput: Partial<Card>): Promise<Card> {
-    const cardCreated = await this.cardRepository.save(createCardInput);
+  async create(
+    createCardInput: CreateCardInput,
+    coverPicture: FileUpload,
+    backgroundPicture: FileUpload,
+    editor: string,
+  ): Promise<Card> {
+    this.cardsPicturesService.backgroundPicture = backgroundPicture;
+    this.cardsPicturesService.coverPicture = coverPicture;
+    this.cardsPicturesService.buildPicturesName();
+
+    const newCard = {
+      ...createCardInput,
+      editor,
+      backgroundPicture: this.cardsPicturesService.backgroundPicture.filename,
+      coverPicture: this.cardsPicturesService.coverPicture.filename,
+    };
+    const [cardCreated] = await Promise.all([
+      this.cardRepository.save(newCard),
+      this.cardsPicturesService.uploadPictures(),
+    ]);
     return cardCreated;
   }
 
-  async findOne(cardInformations: Partial<Card>): Promise<Card> {
+  async findOne(cardInformations: Partial<Card>): Promise<Card | undefined> {
     return await this.cardRepository.findOne({
       where: { ...cardInformations },
     });
   }
 
-  async updateOne(id: number, payload: Partial<Card>): Promise<Card> {
-    const card = await this.findOne({ id });
-
-    if (!card) throw new UnauthorizedException('Card not exist');
-
-    const cardUpdated = { ...card, ...payload };
-    return await this.save(cardUpdated);
+  async findOneOrError(cardInformations: Partial<Card>): Promise<Card> {
+    const card = await this.findOne(cardInformations);
+    if (card === undefined) throw new NotFoundException();
+    return card;
   }
 
-  search(key: string, value: string | number) {
-    const valueToSearch =
-      typeof value === 'string' ? value.toLowerCase() : value.toString();
-    this.query = this.query.where(`${key} LIKE :${key}`, {
-      [key]: `%${valueToSearch}%`,
-    });
+  async updateOne(
+    cardInformations: Partial<Card>,
+    payload: Partial<Card>,
+    coverPicture: FileUpload,
+    backgroundPicture?: FileUpload,
+  ): Promise<Card> {
+    this.card = await this.findOneOrError(cardInformations);
+    this.cardsPicturesService.coverPicture = coverPicture;
+    this.cardsPicturesService.coverPicture.filename = this.card.coverPicture;
+
+    const cardToUpdate = { ...this.card, ...payload };
+    const [cardUpdated] = await Promise.all([
+      this.cardRepository.save(cardToUpdate),
+      this.uploadBackgroundPicture(backgroundPicture),
+      this.cardsPicturesService.uploadCoverPicture(),
+    ]);
+    return cardUpdated;
   }
 
-  filter(key: string, value: string | number) {
-    this.query = this.query.andWhere(`${key} = :${key}`, {
-      [key]: `${value}`,
-    });
-  }
-
-  searchByName(name: string) {
-    this.search('name', name);
-  }
-
-  filterByStep(step: number) {
-    this.filter('step', step);
-  }
-
-  filterByEditor(id: string) {
-    this.filter('editor', id);
-  }
-
-  paginate(pagination: PaginationInput) {
-    this.query = this.query.limit(pagination.end).offset(pagination.start);
-  }
-
-  orderBy(orderBy?: GetCardOrderByInput) {
-    const defaultQueryOrderBy: GetCardOrderByInput = {
-      name: CardOrderBy.updateDate,
-      direction: 'ASC',
-    };
-
-    const name = orderBy?.name ?? defaultQueryOrderBy.name;
-    const direction = orderBy?.direction || defaultQueryOrderBy.direction;
-
-    this.query = this.query.orderBy(name, direction);
-  }
-
-  async get(getCardInput: GetCardInput): Promise<Card[]> {
-    const { orderBy, filterBy } = getCardInput;
-    this.query = this.cardRepository.createQueryBuilder().select();
-
-    if (filterBy?.name) this.searchByName(filterBy.name);
-    if (filterBy?.pagination) this.paginate(filterBy.pagination);
-    if (filterBy?.step) this.filterByStep(filterBy.step);
-    if (filterBy?.editor) this.filterByEditor(filterBy.editor);
-
-    this.orderBy(orderBy);
-
-    return await this.query.getMany();
+  private async uploadBackgroundPicture(backgroundPicture: FileUpload) {
+    if (backgroundPicture !== undefined) {
+      this.cardsPicturesService.backgroundPicture = backgroundPicture;
+      this.cardsPicturesService.backgroundPicture.filename =
+        this.card.backgroundPicture;
+      await this.cardsPicturesService.uploadBackgroundPicture();
+    }
   }
 }
