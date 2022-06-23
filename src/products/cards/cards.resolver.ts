@@ -45,4 +45,11 @@ export class CardsResolver {
   cards(@Args('getCardInput') getCardInput?: GetCardInput): Promise<Card[]> {
     return this.cardsListService.get(getCardInput);
   }
+
+  @Query(() => Card)
+  @UseGuards(JwtAuthGuard)
+  userCard(@Args('id') id: number, @Context() context): Promise<Card> {
+    const editor = context.req.user.username;
+    return this.cardsService.findOneOrError({ id, editor });
+  }
 }
