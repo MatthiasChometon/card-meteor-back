@@ -1,46 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { FileUpload } from 'graphql-upload';
 import * as fs from 'fs';
+import * as admin from 'firebase-admin';
+import { Bucket } from '@google-cloud/storage';
 
 @Injectable()
 export class UploadService {
-  private filePath: string;
-  private specificFolder: string;
-  private file: FileUpload;
-  private mainPath: string;
+  constructor() {
+    this.bucket = admin.storage().bucket(process.env.BUCKET_NAME);
+  }
+  private bucket: Bucket;
 
-  private buildFilePath(): void {
-    this.filePath = `${this.mainPath}/${this.specificFolder}/`;
-    this.buildFolder(this.filePath);
+  async uploadFile(file: FileUpload, specificFolder: string): Promise<void> {
+    await this.localUpload(file);
+    await this.bucketUpload(file, specificFolder);
+    this.removeLocalFile(file);
   }
 
-  private buildMainFolder() {
-    this.mainPath = `${__dirname}/../uploads`;
-    this.buildFolder(this.mainPath);
+  private async bucketUpload(
+    file: FileUpload,
+    specificFolder: string,
+  ): Promise<void> {
+    const destination = `${specificFolder}/${file.filename}`;
+    await this.bucket.upload(file.filename, {
+      destination,
+    });
   }
 
-  private buildFolder(folderName: string): void {
-    if (!fs.existsSync(folderName)) fs.mkdirSync(folderName);
-  }
-
-  private async saveOnServer(): Promise<boolean> {
-    const { createReadStream, filename } = this.file;
-    const filePathToSave = `${this.filePath}${filename}`;
+  private async localUpload(file: FileUpload): Promise<boolean> {
+    const { createReadStream, filename } = file;
 
     return new Promise(async (resolve, reject) =>
       createReadStream()
-        .pipe(fs.createWriteStream(filePathToSave))
+        .pipe(fs.createWriteStream(filename))
         .on('finish', () => resolve(true))
         .on('error', () => reject(false)),
     );
   }
 
-  async uploadFile(file: FileUpload, specificFolder: string): Promise<boolean> {
-    this.specificFolder = specificFolder;
-    this.file = file;
-    this.buildMainFolder();
-    this.buildFilePath();
-    return await this.saveOnServer();
+  private removeLocalFile(file: FileUpload): void {
+    fs.unlinkSync(file.filename);
   }
 
   generateFileName(extension: string): string {
