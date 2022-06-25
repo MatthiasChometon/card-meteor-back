@@ -34,10 +34,13 @@ export class CardsPicturesService {
   }
 
   async uploadBackgroundPicture(): Promise<void> {
-    await this.uploadService.uploadFile(this.backgroundPicture, 'background');
+    await this.uploadService.uploadFile(
+      this.backgroundPicture,
+      'cards/background',
+    );
   }
 
   async uploadCoverPicture(): Promise<void> {
-    await this.uploadService.uploadFile(this.coverPicture, 'cover');
+    await this.uploadService.uploadFile(this.coverPicture, 'cards/cover');
   }
 }
