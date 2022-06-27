@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { CreationComment } from '../../../creation-comments/entities/creation-comment.entity';
 
 @Entity({ name: 'cards' })
 @ObjectType()
@@ -97,4 +98,10 @@ export class Card {
     cascade: true,
   })
   orderProducts: OrderProduct[];
+
+  @Field(() => [CreationComment])
+  @OneToMany(() => CreationComment, (creationComment) => creationComment.card, {
+    cascade: true,
+  })
+  comments: CreationComment[];
 }
