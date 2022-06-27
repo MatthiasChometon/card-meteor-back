@@ -4,6 +4,7 @@ import { Card } from './entities/card.entity';
 import { CreateCardInput } from './dto/create-card.input';
 import { FileUpload } from 'graphql-upload';
 import { CardsPicturesService } from './cardsPictures.service';
+import { ProductStep } from '../enums/product-step';
 
 @Injectable()
 export class CardsService {
@@ -44,7 +45,10 @@ export class CardsService {
   }
 
   async findOneOrError(cardInformations: Partial<Card>): Promise<Card> {
-    const card = await this.findOne(cardInformations);
+    const card = await this.cardRepository.findOne({
+      where: { ...cardInformations },
+      relations: ['comments'],
+    });
     if (card === undefined) throw new NotFoundException();
     return card;
   }
@@ -75,5 +79,10 @@ export class CardsService {
         this.card.backgroundPicture;
       await this.cardsPicturesService.uploadBackgroundPicture();
     }
+  }
+
+  async validate(id: number): Promise<Card> {
+    await this.findOneOrError({ id });
+    return await this.cardRepository.save({ id, step: ProductStep.released });
   }
 }
