@@ -3,6 +3,7 @@ import { Repository } from 'typeorm/repository/Repository';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { UserRoles } from './enums/user-role.enum';
 
 @Injectable()
 export class UsersService {
@@ -50,5 +51,9 @@ export class UsersService {
 
   async hashPassword(createUserInput: Partial<User>) {
     return bcrypt.hash(createUserInput.password, 10);
+  }
+
+  checkIfValidator(role: UserRoles): void {
+    if (role !== UserRoles.validator) throw new UnauthorizedException();
   }
 }
