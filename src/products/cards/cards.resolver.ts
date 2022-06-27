@@ -8,12 +8,14 @@ import { CardsListService } from './cardsList.service';
 import { UpdateCardInput } from './dto/update-card.input';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { UsersService } from '../../users/users.service';
 
 @Resolver()
 export class CardsResolver {
   constructor(
     private readonly cardsService: CardsService,
     private readonly cardsListService: CardsListService,
+    private readonly usersService: UsersService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -71,5 +73,22 @@ export class CardsResolver {
   userCard(@Args('id') id: number, @Context() context): Promise<Card> {
     const editor = context.req.user.username;
     return this.cardsService.findOneOrError({ id, editor });
+  }
+
+  @Query(() => Card)
+  @UseGuards(JwtAuthGuard)
+  card(@Args('id') id: number, @Context() context): Promise<Card> {
+    this.usersService.checkIfValidator(context.req.user.role);
+    return this.cardsService.findOneOrError({ id });
+  }
+
+  @Mutation(() => Card)
+  @UseGuards(JwtAuthGuard)
+  async validateCard(
+    @Args('id') id: number,
+    @Context() context,
+  ): Promise<Card> {
+    this.usersService.checkIfValidator(context.req.user.role);
+    return this.cardsService.validate(id);
   }
 }
