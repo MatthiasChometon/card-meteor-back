@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config/dist/config.module';
 import { CardsModule } from './products/cards/cards.module';
 import { OrderModule } from './order/order.module';
 import { UploadModule } from './upload/upload.module';
+import { CreationCommentsModule } from './creation-comments/creation-comments.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UploadModule } from './upload/upload.module';
     CardsModule,
     OrderModule,
     UploadModule,
+    CreationCommentsModule,
   ],
   controllers: [],
   providers: [],
