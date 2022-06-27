@@ -7,6 +7,7 @@ type Card {
   attack: String!
   attribute: String!
   backgroundPicture: String!
+  comments: [CreationComment!]!
   coverPicture: String!
   defense: String!
   description: String!
@@ -41,6 +42,11 @@ input CreateCardInput {
   type: String!
 }
 
+input CreateCreationCommentInput {
+  cardId: Int!
+  comment: String!
+}
+
 input CreateOrderInput {
   products: [ProductInput!]!
 }
@@ -52,6 +58,12 @@ input CreateUserInput {
   password: String!
   phone: String!
   username: String!
+}
+
+type CreationComment {
+  comment: String!
+  creationDate: DateTime!
+  id: Float!
 }
 
 """
@@ -89,12 +101,14 @@ input LoginUserInput {
 
 type Mutation {
   createCard(backgroundPicture: Upload!, coverPicture: Upload!, createCardInput: CreateCardInput!): Card!
+  createCreationComment(creationComment: CreateCreationCommentInput!): CreationComment!
   createOrder(createOrderInput: CreateOrderInput!): Order!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   refreshTokens(refreshToken: String!): LoginResponse!
   register(createUserInput: CreateUserInput!): LoginResponse!
   updateAccount(updateUserInput: UpdateUserInput!): User!
   updateUserCard(backgroundPicture: Upload, coverPicture: Upload!, updateCardInput: UpdateCardInput!): Card!
+  validateCard(id: Float!): Card!
 }
 
 type Order {
@@ -121,6 +135,7 @@ input ProductInput {
 
 type Query {
   account: User!
+  card(id: Float!): Card!
   cards(getCardInput: GetCardInput!): [Card!]!
   userCard(id: Float!): Card!
 }
