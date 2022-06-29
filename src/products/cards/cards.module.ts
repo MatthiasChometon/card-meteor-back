@@ -6,6 +6,8 @@ import { DatabaseModule } from '../../database/database.module';
 import { CardsListService } from './cardsList.service';
 import { UploadService } from '../../upload/upload.service';
 import { CardsPicturesService } from './cardsPictures.service';
+import { UsersService } from '../../users/users.service';
+import { userProviders } from 'src/users/users.providers';
 
 @Module({
   imports: [DatabaseModule],
@@ -14,8 +16,10 @@ import { CardsPicturesService } from './cardsPictures.service';
     CardsPicturesService,
     CardsService,
     ...cardProviders,
+    ...userProviders,
     CardsListService,
     UploadService,
+    UsersService,
   ],
 })
 export class CardsModule {}
