@@ -17,7 +17,7 @@ export class OrderResolver {
   ): Promise<Order> {
     return this.orderService.create(
       createOrderInput.products,
-      context.req.user.user.id,
+      context.req.user.id,
     );
   }
 }
