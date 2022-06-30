@@ -46,6 +46,7 @@ export class Order {
   @Field()
   trackingNumber: string;
 
+  @Field(() => [OrderProduct])
   @OneToMany(() => OrderProduct, (orderProduct) => orderProduct.order, {
     cascade: true,
   })
