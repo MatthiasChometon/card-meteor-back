@@ -10,8 +10,14 @@ async function bootstrap() {
   admin.initializeApp({
     credential: admin.credential.cert(firebaseConfig),
   });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: true,
+  });
   app.use(graphqlUploadExpress());
   app.useStaticAssets(join(__dirname, 'uploads'));
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN,
+  });
   await app.listen(3000);
 }
 bootstrap();
