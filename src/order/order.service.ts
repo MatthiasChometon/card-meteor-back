@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
-import { ProductInput } from './types/product-input';
+import { ProductInput } from './dto/product-input';
 import { OrderProduct } from './entities/order-product.entity';
 import { Card } from '../products/cards/entities/card.entity';
 
@@ -92,5 +92,19 @@ export class OrderService {
   private buildDeliveryDate(): void {
     const date = new Date(Date.now() + 600000000);
     this.order.deliveryDate = date;
+  }
+
+  async findUserOrders(state: number, buyerId: number): Promise<Order[]> {
+    const orders = await this.orderRepository
+      .createQueryBuilder('o')
+      .where('o.state = :state', { state })
+      .andWhere('o.buyer.id = :buyerId', { buyerId })
+      .leftJoin('o.orderProducts', 'op')
+      .leftJoin('op.product', 'p')
+      .addSelect('op.number')
+      .addSelect('p', 'product')
+      .orderBy('o.deliveryDate', 'DESC')
+      .getMany();
+    return orders;
   }
 }

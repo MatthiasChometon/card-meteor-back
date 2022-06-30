@@ -115,11 +115,18 @@ type Order {
   creationDate: DateTime!
   deliveryDate: DateTime!
   id: Float!
+  orderProducts: [OrderProduct!]!
   productsPrice: Float!
   shippingCostPrice: Float!
   state: Float!
   totalPrice: Float!
   trackingNumber: String!
+}
+
+type OrderProduct {
+  id: Float!
+  number: Float!
+  product: Card!
 }
 
 input PaginationInput {
@@ -138,6 +145,7 @@ type Query {
   card(id: Float!): Card!
   cards(getCardInput: GetCardInput!): [Card!]!
   userCard(id: Float!): Card!
+  userOrders(state: Float!): [Order!]!
 }
 
 input UpdateCardInput {

@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Context, Query } from '@nestjs/graphql';
 import { OrderService } from './order.service';
 import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
@@ -19,5 +19,15 @@ export class OrderResolver {
       createOrderInput.products,
       context.req.user.id,
     );
+  }
+
+  @Query(() => [Order])
+  @UseGuards(JwtAuthGuard)
+  userOrders(
+    @Args('state') state: number,
+    @Context() context,
+  ): Promise<Order[]> {
+    const userId = context.req.user.id;
+    return this.orderService.findUserOrders(state, userId);
   }
 }
