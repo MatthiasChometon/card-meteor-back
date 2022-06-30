@@ -138,6 +138,7 @@ type Query {
   card(id: Float!): Card!
   cards(getCardInput: GetCardInput!): [Card!]!
   userCard(id: Float!): Card!
+  userOrders(state: Float!): [Order!]!
 }
 
 input UpdateCardInput {
