@@ -16,6 +16,7 @@ export class OrderProduct {
   @Field()
   id: number;
 
+  @Field()
   @Column()
   number: number;
 
@@ -23,6 +24,7 @@ export class OrderProduct {
   @JoinColumn()
   order: Order;
 
+  @Field(() => Card)
   @ManyToOne(() => Card, (user) => user.orderProducts)
   @JoinColumn()
   product: Card;
