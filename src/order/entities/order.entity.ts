@@ -17,7 +17,7 @@ export class Order {
   @Field()
   id: number;
 
-  @Column({ default: 0 })
+  @Column({ default: 1 })
   @Field()
   state: number;
 
