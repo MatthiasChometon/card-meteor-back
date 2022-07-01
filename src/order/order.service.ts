@@ -5,6 +5,7 @@ import { Order } from './entities/order.entity';
 import { ProductInput } from './dto/product-input';
 import { OrderProduct } from './entities/order-product.entity';
 import { Card } from '../products/cards/entities/card.entity';
+import { GetOrdersInput } from './dto/get-orders.input';
 
 @Injectable()
 export class OrderService {
@@ -94,7 +95,11 @@ export class OrderService {
     this.order.deliveryDate = date;
   }
 
-  async findUserOrders(state: number, buyerId: number): Promise<Order[]> {
+  async findUserOrders(
+    orderInput: GetOrdersInput,
+    buyerId: number,
+  ): Promise<Order[]> {
+    const { state, pagination } = orderInput;
     const orders = await this.orderRepository
       .createQueryBuilder('o')
       .where('o.state = :state', { state })
@@ -104,7 +109,10 @@ export class OrderService {
       .addSelect('op.number')
       .addSelect('p', 'product')
       .orderBy('o.deliveryDate', 'DESC')
+      .offset(pagination.start)
+      .limit(pagination.end)
       .getMany();
+
     return orders;
   }
 }

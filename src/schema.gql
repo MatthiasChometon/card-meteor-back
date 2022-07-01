@@ -88,6 +88,11 @@ input GetCardOrderByInput {
   name: String
 }
 
+input GetOrdersInput {
+  pagination: PaginationInput!
+  state: Float!
+}
+
 type LoginResponse {
   accessToken: String!
   refreshToken: String!
@@ -145,7 +150,7 @@ type Query {
   card(id: Float!): Card!
   cards(getCardInput: GetCardInput!): [Card!]!
   userCard(id: Float!): Card!
-  userOrders(state: Float!): [Order!]!
+  userOrders(getOrdersInput: GetOrdersInput!): [Order!]!
 }
 
 input UpdateCardInput {

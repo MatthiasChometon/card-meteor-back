@@ -4,6 +4,7 @@ import { Order } from './entities/order.entity';
 import { CreateOrderInput } from './dto/create-order.input';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UseGuards } from '@nestjs/common';
+import { GetOrdersInput } from './dto/get-orders.input';
 
 @Resolver(() => Order)
 export class OrderResolver {
@@ -24,10 +25,10 @@ export class OrderResolver {
   @Query(() => [Order])
   @UseGuards(JwtAuthGuard)
   userOrders(
-    @Args('state') state: number,
+    @Args('getOrdersInput') getOrdersInput: GetOrdersInput,
     @Context() context,
   ): Promise<Order[]> {
     const userId = context.req.user.id;
-    return this.orderService.findUserOrders(state, userId);
+    return this.orderService.findUserOrders(getOrdersInput, userId);
   }
 }
