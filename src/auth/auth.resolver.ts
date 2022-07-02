@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { LoginResponse } from './dto/login-response';
 import { LoginUserInput } from './dto/login-user.input';
 import { GqlAuthGuard } from './guards/gql-auth-guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Resolver()
 export class AuthResolver {
@@ -24,8 +25,13 @@ export class AuthResolver {
     return this.authService.signUp(createUserInput);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Mutation(() => LoginResponse)
-  refreshTokens(@Args('refreshToken') refreshToken: string) {
-    return this.authService.refreshTokens(refreshToken);
+  refreshTokens(
+    @Args('refreshToken') refreshToken: string,
+    @Context() context,
+  ) {
+    const id = context.req.user.id;
+    return this.authService.refreshTokens(refreshToken, id);
   }
 }
