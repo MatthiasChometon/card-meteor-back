@@ -13,7 +13,7 @@ export class CardsPicturesService {
     this.buildCoverPicture();
   }
 
-  private buildBackgroundPicture(): void {
+  buildBackgroundPicture(): void {
     const backgroundPictureExtension = this.uploadService.getFileExtension(
       this.backgroundPicture,
     );
@@ -22,7 +22,7 @@ export class CardsPicturesService {
     );
   }
 
-  private buildCoverPicture(): void {
+  buildCoverPicture(): void {
     this.coverPicture.filename = this.uploadService.generateFileName('png');
   }
 
