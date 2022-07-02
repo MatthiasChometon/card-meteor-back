@@ -13,12 +13,15 @@ import { CreationCommentsModule } from './creation-comments/creation-comments.mo
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.local', '.env'],
+      envFilePath: ['.env.production', '.env.local', '.env'],
+      isGlobal: true,
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+      introspection: true,
+      playground: true,
     }),
     UsersModule,
     AuthModule,

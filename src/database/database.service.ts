@@ -10,10 +10,11 @@ export class DatabaseService {
     const port = parseInt(process.env.DATABASE_PORT);
     const synchronize: boolean = process.env.DATABASE_SYNCHRONIZE === 'true';
     const type: any = process.env.DATABASE_TYPE;
-    const isSynchronizeNotABoolean =
-      process.env.DATABASE_SYNCHRONIZE !== ('true' || 'false');
+    const isSynchronizeABoolean =
+      process.env.DATABASE_SYNCHRONIZE === 'true' ||
+      process.env.DATABASE_SYNCHRONIZE === 'false';
 
-    if (!port || isSynchronizeNotABoolean)
+    if (!port || !isSynchronizeABoolean)
       throw new Error('unvalid database configuration');
 
     this.synchronize = synchronize;
