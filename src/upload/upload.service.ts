@@ -17,6 +17,11 @@ export class UploadService {
     this.removeLocalFile(file);
   }
 
+  async deleteFile(path: string) {
+    const prefix = `${path}`;
+    this.bucket.deleteFiles({ prefix });
+  }
+
   private async bucketUpload(
     file: FileUpload,
     specificFolder: string,
