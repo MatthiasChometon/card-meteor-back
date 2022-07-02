@@ -56,6 +56,7 @@ export class AuthService {
       this.signToken(user),
       this.signRefreshToken(user),
     ]);
+    await this.usersService.updateOne(user.id, { refreshToken });
     return { accessToken, refreshToken };
   }
 
