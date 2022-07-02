@@ -52,8 +52,10 @@ export class AuthService {
     refreshToken: string;
     accessToken: string;
   }> {
-    const accessToken = await this.signToken(user);
-    const refreshToken = await this.signRefreshToken(user);
+    const [accessToken, refreshToken] = await Promise.all([
+      this.signToken(user),
+      this.signRefreshToken(user),
+    ]);
     return { accessToken, refreshToken };
   }
 
