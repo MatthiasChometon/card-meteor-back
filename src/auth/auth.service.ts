@@ -39,8 +39,11 @@ export class AuthService {
     return await this.login(user);
   }
 
-  async refreshTokens(refreshToken: string): Promise<LoginResponse> {
-    const user = await this.resolveRefreshToken(refreshToken);
+  async refreshTokens(
+    refreshToken: string,
+    id: number,
+  ): Promise<LoginResponse> {
+    const user = await this.resolveRefreshToken(refreshToken, id);
     const tokens = await this.signTokens(user);
     return { ...tokens, user };
   }
@@ -49,8 +52,11 @@ export class AuthService {
     refreshToken: string;
     accessToken: string;
   }> {
-    const accessToken = await this.signToken(user);
-    const refreshToken = await this.signRefreshToken(user);
+    const [accessToken, refreshToken] = await Promise.all([
+      this.signToken(user),
+      this.signRefreshToken(user),
+    ]);
+    await this.usersService.updateOne(user.id, { refreshToken });
     return { accessToken, refreshToken };
   }
 
@@ -86,9 +92,12 @@ export class AuthService {
     }
   }
 
-  private async resolveRefreshToken(refreshToken: string): Promise<User> {
+  private async resolveRefreshToken(
+    refreshToken: string,
+    id: number,
+  ): Promise<User> {
     const [user] = await Promise.all([
-      this.usersService.findOne({ refreshToken }),
+      this.usersService.findOne({ refreshToken, id }),
       this.verifyRefreshToken(refreshToken),
     ]);
 
