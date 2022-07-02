@@ -10,14 +10,15 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "dev": "nest start --watch",
-    "debug": "nest start --debug --watch",
-    "prod": "node dist/main",
+    "dev": "yarn deleteBuild&& nest start --watch",
+    "debug": "yarn deleteBuild&& nest start --debug --watch",
+    "prod": "yarn deleteBuild&& yarn build&& node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --config ./test/jest.json",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "deleteBuild": "rm -rf dist"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.0.9",
