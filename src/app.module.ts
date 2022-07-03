@@ -22,14 +22,9 @@ import { CreationCommentsModule } from './creation-comments/creation-comments.mo
       sortSchema: true,
       introspection: true,
       playground: true,
-      csrfPrevention: true,
       cache: 'bounded',
       persistedQueries: {
         ttl: 900,
-      },
-      cors: {
-        credentials: true,
-        origin: true,
       },
     }),
     UsersModule,
