@@ -4,9 +4,14 @@ import { graphqlUploadExpress } from 'graphql-upload';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as admin from 'firebase-admin';
-import { firebaseConfig } from '../firebase';
 
 async function bootstrap() {
+  const privateKey = Buffer.from(process.env.PRIVATE_KEY).toString();
+  const firebaseConfig = {
+    projectId: process.env.PROJECT_ID,
+    privateKey,
+    clientEmail: process.env.CLIENT_EMAIL,
+  };
   admin.initializeApp({
     credential: admin.credential.cert(firebaseConfig),
   });
