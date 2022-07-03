@@ -22,8 +22,6 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, 'uploads'));
   app.enableCors({
     origin: process.env.CORS_ORIGIN,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
   });
   await app.listen(process.env.PORT || 4000);
 }
