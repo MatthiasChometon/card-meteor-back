@@ -23,7 +23,7 @@ describe('database service', () => {
       it('throws error', async () => {
         const databaseService = new DatabaseService();
         await expect(databaseService.connect()).rejects.toThrowError(
-          'unvalid database configuration',
+          'unvalid database configuration sdsd',
         );
       });
     });
