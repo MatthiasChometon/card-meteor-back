@@ -27,6 +27,10 @@ import { CreationCommentsModule } from './creation-comments/creation-comments.mo
       persistedQueries: {
         ttl: 900,
       },
+      cors: {
+        credentials: true,
+        origin: true,
+      },
     }),
     UsersModule,
     AuthModule,
