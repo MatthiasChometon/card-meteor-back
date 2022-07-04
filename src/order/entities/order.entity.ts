@@ -21,15 +21,15 @@ export class Order {
   @Field()
   state: number;
 
-  @Column({ type: 'float' })
+  @Column('decimal', { precision: 5, scale: 2 })
   @Field()
   productsPrice: number;
 
-  @Column({ type: 'float' })
+  @Column('decimal', { precision: 5, scale: 2 })
   @Field()
   totalPrice: number;
 
-  @Column({ type: 'float' })
+  @Column('decimal', { precision: 5, scale: 2 })
   @Field()
   shippingCostPrice: number;
 
