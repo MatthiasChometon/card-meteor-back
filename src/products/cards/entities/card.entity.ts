@@ -70,7 +70,7 @@ export class Card {
   @Field()
   backgroundPicture: string;
 
-  @Column({ default: 0.1, type: 'float' })
+  @Column('decimal', { precision: 5, scale: 2, default: 0.1 })
   @Field()
   price: number;
 
